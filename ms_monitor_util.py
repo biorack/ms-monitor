@@ -223,7 +223,7 @@ def filter_istd_qc_by_method(method):
                 df.loc[counter,'compound'] = compound[0]
                 #df.loc[counter,'permanent_charge'] = compound[permanent_charge_index]
                 for idx in rt_mz_intensity_index:
-                    temp_col = column_names[idx].replace(lc_method,'').replace(ms_method,'').replace('_','')
+                    temp_col = column_names[idx].replace(lc_method,'').replace(ms_method,'').replace('_','').replace('rtpeak','RT')
                     df.loc[counter,temp_col] = compound[idx]
                 counter = counter + 1
         df.set_index('compound', drop=True, inplace=True)
@@ -249,6 +249,7 @@ def filter_istd_qc_by_method(method):
     return reference_data
 
 def setup_atlas_values(df,rt_minutes_tolerance,mz_ppm_tolerance):
+    print df.keys()
     temp_dict = df.to_dict()['RT']
     for compound_name in temp_dict.keys():
         if temp_dict[compound_name]:
@@ -262,7 +263,7 @@ def setup_atlas_values(df,rt_minutes_tolerance,mz_ppm_tolerance):
             #df.loc[compound_name,'pos_mz_max'] = pos_mz + pos_mz * mz_ppm_tolerance / 1e6
             #df.loc[compound_name,'neg_mz_min'] = neg_mz - neg_mz * mz_ppm_tolerance / 1e6
             #df.loc[compound_name,'neg_mz_max'] = neg_mz + neg_mz * mz_ppm_tolerance / 1e6
-
+            #TODO if rt_min and rt_max exist then use the real vlues
             df.loc[compound_name,'rt_min'] = float(temp_dict[compound_name]) - rt_minutes_tolerance
             df.loc[compound_name,'rt_max'] = float(temp_dict[compound_name]) + rt_minutes_tolerance
     return df
